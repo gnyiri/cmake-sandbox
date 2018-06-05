@@ -9,16 +9,29 @@ else()
 
   include(ExternalProject)
 
-  ExternalProject_Add(${PACKAGE_NAME}-project
-    URL ${CMAKE_SOURCE_DIR}/submodules/${PACKAGE_NAME}/
-    PREFIX "${CMAKE_CURRENT_BINARY_DIR}/lib/submodules/${PACKAGE_NAME}"
-    # BUILD_IN_SOURCE 1
-    CMAKE_ARGS -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs -Dgtest_force_shared_crt=ON -DBUILD_GTEST=ON -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-    LOG_DOWNLOAD ON
-    LOG_CONFIGURE ON
-    LOG_BUILD ON
-    LOG_INSTALL ON
-  )
+  if (WIN32)
+    ExternalProject_Add(${PACKAGE_NAME}-project
+      URL ${CMAKE_SOURCE_DIR}/submodules/${PACKAGE_NAME}/
+      PREFIX "${CMAKE_CURRENT_BINARY_DIR}/lib/submodules/${PACKAGE_NAME}"
+      # BUILD_IN_SOURCE 1
+      # CMAKE_ARGS -DCMAKE_CXX_FLAGS=/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs -Dgtest_force_shared_crt=ON -DBUILD_GTEST=ON -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+      LOG_DOWNLOAD ON
+      LOG_CONFIGURE ON
+      LOG_BUILD ON
+      LOG_INSTALL ON
+    )
+  else()
+    ExternalProject_Add(${PACKAGE_NAME}-project
+      URL ${CMAKE_SOURCE_DIR}/submodules/${PACKAGE_NAME}/
+      PREFIX "${CMAKE_CURRENT_BINARY_DIR}/lib/submodules/${PACKAGE_NAME}"
+      # BUILD_IN_SOURCE 1
+      CMAKE_ARGS -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG:PATH=DebugLibs -DCMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE:PATH=ReleaseLibs -Dgtest_force_shared_crt=ON -DBUILD_GTEST=ON -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+      # LOG_DOWNLOAD ON
+      # LOG_CONFIGURE ON
+      # LOG_BUILD ON
+      # LOG_INSTALL ON
+    )
+  endif()
 
   ExternalProject_Get_Property(${PACKAGE_NAME}-project install_dir)
   ExternalProject_Get_Property(${PACKAGE_NAME}-project binary_dir)
@@ -27,16 +40,24 @@ else()
   file(MAKE_DIRECTORY ${install_dir}/include)
 
   add_library(gtest STATIC IMPORTED)
-  set_property(TARGET gtest PROPERTY IMPORTED_LOCATION ${install_dir}/lib/gtest.lib)
+  if (WIN32)
+    set_property(TARGET gtest PROPERTY IMPORTED_LOCATION ${install_dir}/lib/gtest.lib)
+  else()
+    set_property(TARGET gtest PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libgtest.a)
+  endif()
   set_property(TARGET gtest APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${install_dir}/include)
   add_dependencies(gtest ${PACKAGE_NAME}-project)
   set(GTEST_LIBRARIES gtest)
 
   add_library(gtest_main STATIC IMPORTED)
-  set_property(TARGET gtest_main PROPERTY IMPORTED_LOCATION ${install_dir}/lib/gtest_main.lib)
+  if (WIN32)
+    set_property(TARGET gtest_main PROPERTY IMPORTED_LOCATION ${install_dir}/lib/gtest_main.lib)
+  else()
+  set_property(TARGET gtest_main PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libgtest_main.a)
+  endif()
   set_property(TARGET gtest_main APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${install_dir}/include)
   add_dependencies(gtest_main ${PACKAGE_NAME}-project)
-  set(GTEST_MAIN_LIBRARIES gtest_main) 
+  set(GTEST_MAIN_LIBRARIES gtest_main)
 endif()
 
 message(STATUS "${PACKAGE_NAME} library: ${GTEST_LIBRARIES}")
