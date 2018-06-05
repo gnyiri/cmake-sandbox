@@ -1,0 +1,8 @@
+# Set default handling of line terminators for all non explicitly listed file types:
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.cc text eol=lf
+*.h text eol=lf
+*.sh text eol=lf
