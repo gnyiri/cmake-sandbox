@@ -11,6 +11,10 @@ add_executable(library_a_test
   ${sources}
 )
 
+add_dependencies(library_a_test
+  googletest-project
+)
+
 # link gtest libraries and the library being tested
 if (WIN32)
   target_link_libraries(library_a_test
