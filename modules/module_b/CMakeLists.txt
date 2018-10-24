@@ -25,7 +25,7 @@ target_link_libraries(library_b
 # add compiler flags
 target_compile_options(library_b
   PRIVATE
-	-Wall
+		-Wall
 )
 
 target_compile_features(library_b
@@ -33,11 +33,6 @@ target_compile_features(library_b
     cxx_std_11
 )
 
-set_target_properties(library_b
-  PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-  ARCHIVE_OUTPUT_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-  LIBRARY_OUTPUT_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-)
-
-add_subdirectory(test)
+if (BUILD_TEST)
+	add_subdirectory(test)
+endif()

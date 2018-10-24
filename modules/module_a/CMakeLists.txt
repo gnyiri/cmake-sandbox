@@ -16,7 +16,7 @@ target_include_directories(library_a
 
 target_compile_options(library_a
   PRIVATE
-	-Wall
+		-Wall
 )
 
 target_compile_features(library_a
@@ -24,11 +24,6 @@ target_compile_features(library_a
     cxx_std_11
 )
 
-set_target_properties(library_a
-  PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/include"
-  ARCHIVE_OUTPUT_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-  LIBRARY_OUTPUT_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-)
-
-add_subdirectory(test)
+if (BUILD_TEST)
+	add_subdirectory(test)
+endif()

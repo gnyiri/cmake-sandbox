@@ -1,4 +1,4 @@
-project(sts-library)
+project(sandbox-library)
 
 cmake_minimum_required(VERSION 3.9)
 
@@ -7,11 +7,11 @@ set(SW_VERSION_MINOR 0)
 set(SW_VERSION_PATCH 1)
 
 # whether to build unit tests or not
-option(BUILD_TEST "Build Unit Tests" ON)
+option(BUILD_TEST "Build Unit Tests" OFF)
 # whether to build examples or not
 option(BUILD_EXAMPLE "Build Examples" ON)
 # dynamic or static libraries
-option(BUILD_SHARED_LIBS "Build Shared Libs" OFF)
+option(BUILD_SHARED_LIBS "Build Shared Libs" ON)
 
 # all executables will be generated here
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)

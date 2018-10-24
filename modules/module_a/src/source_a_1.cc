@@ -1,10 +1,10 @@
 #include "module_a/module_a.h"
 
-namespace sts
+namespace sandbox
 {
   namespace module_a
   {
-    int f(int x)
+    int f_a(int x)
     {
       return x * x;
     }
